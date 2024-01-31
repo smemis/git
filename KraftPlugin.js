@@ -6,7 +6,7 @@ var msg = "";
 function myTrim(x) {
 	return x.replace(/^\s+|\s+$/gm, '');
 }
-
+ 
 function xRemove(items){
 	for (var i = 0; i < items.length; i++) {
 		var item = items[i];
@@ -125,12 +125,18 @@ async function runSC(framework) {
 			console.warn(selectedchks.join(','));
 			
 			console.warn(uts);
+			var url = pinegrow.getFrameworks()["wordpress.pinegrow"].current_theme_info.dir;//path
+			var themename = pinegrow.getFrameworks()["wordpress.pinegrow"].current_theme_info.options.name;
+			var slug = pinegrow.getFrameworks()["wordpress.pinegrow"].current_theme_info.options.slug;
+			var sourcedir = pinegrow.getFrameworks()["wordpress.pinegrow"].current_theme_info.source_dir;
+			var baseurl = framework.getBaseUrl().replaceAll("file:///","").replaceAll("/","\\");
 
 			if(uts){
-				var url = pinegrow.getFrameworks()["wordpress.pinegrow"].current_theme_info.dir;
-				var themename = pinegrow.getFrameworks()["wordpress.pinegrow"].current_theme_info.options.name;
-				var slug = pinegrow.getFrameworks()["wordpress.pinegrow"].current_theme_info.options.slug;
-				var sourcedir = pinegrow.getFrameworks()["wordpress.pinegrow"].current_theme_info.source_dir;
+				// var url = pinegrow.getFrameworks()["wordpress.pinegrow"].current_theme_info.dir;//path
+				// var themename = pinegrow.getFrameworks()["wordpress.pinegrow"].current_theme_info.options.name;
+				// var slug = pinegrow.getFrameworks()["wordpress.pinegrow"].current_theme_info.options.slug;
+				// var sourcedir = pinegrow.getFrameworks()["wordpress.pinegrow"].current_theme_info.source_dir;
+				// var baseurl = framework.getBaseUrl().replaceAll("file:///","");
 
 				console.warn(11);
 				console.warn(url);
@@ -144,7 +150,12 @@ async function runSC(framework) {
 				pinegrow.showAlert(msg, 'Copy and Paste any shell window', '', 'Close', null, function () {});
 	
 				const child_process = require('child_process');
-				 process.env.PATH += ";"+ framework.getBaseUrl().replaceAll("file:///","").replaceAll("/","\\");
+				if(process.env.PATH.split(';').indexOf(baseurl)>=0){
+				}else{
+					process.env.PATH += ";"+ baseurl;
+				}
+				//  process.env.PATH += ";"+ framework.getBaseUrl().replaceAll("file:///","").replaceAll("/","\\");
+
 				 console.warn(process.env);
 //				 var cmdd = 'gulp sc --basepath ' + framework.getBaseUrl().replaceAll("file:///","") + ' --path '+ url.replace("file:///","") + ' --chks "'+selectedchks.join(',') + '"' ;
 				 var cmdd = 'gulp sc --basepath ' + framework.getBaseUrl().replaceAll("file:///","") + ' --path '+ url.replace("file:///","") + ' --chks "'+selectedchks.join(',') + '"' +' --themename "'+ themename +'" --slug "'+ slug +'" --sourcedir "'+ sourcedir +'"' ;
@@ -172,56 +183,131 @@ async function runSC(framework) {
 					console.warn(url);
 	
 					bizim = url;
-					var projectFile = "";//fse.readFileSync(framework.getBaseUrl()+'/pinegrow.json', "utf-8");
-	
-					msg = projectFile+"<textarea style='width: 100%;height: 100px;'>cd "+framework.getBaseUrl().replaceAll("file:///","") + "\n"; 
-					msg += "gulp sc --basepath "+ framework.getBaseUrl().replaceAll("file:///","") +" --path "+bizim.replace("file:///","")+" --chks "+ selectedchks +" --themename '"+ themename +"' --slug "+ slug +" --sourcedir "+ sourcedir +"</textarea>";
-	
-					pinegrow.showAlert(msg, 'Copy and Paste any shell window', '', 'Close', null, function () {});
-	
-					//const {exec, fork, spawn} = require('child_process');
-					const child_process = require('child_process');
-	
-					// console.warn("process.env: ");
-					// console.warn(process.env);
-					// process.env.Path += ";"+ process.env.INIT_CWD+";zzzzz";
-					 process.env.PATH += ";"+ framework.getBaseUrl().replaceAll("file:///","").replaceAll("/","\\");
-					 //process.env.PATH += ";"+ framework.getBaseUrl().replaceAll("file:///","").replaceAll("/","\\")+"\\";
-					 //process.env.PATH += ":"+ framework.getBaseUrl().replaceAll("file:///","");
-					 //process.env.PATH += ":"+ framework.getBaseUrl().replaceAll("file:///","");
-					 //process.env.PATH += ";"+ framework.getBaseUrl().replaceAll("file:///","");
-					 //process.env.PATH += ";"+ framework.getBaseUrl().replaceAll("file:///","");
-					 console.warn(process.env);
-					// console.warn(framework);		
-					// console.warn(framework.getBaseUrl());		
-					//file:///Users/semih/Desktop/2023/KraftPlugin
-//					var cmdd = 'gulp sc --basepath ' + framework.getBaseUrl().replaceAll("file:///","") + ' --path '+ url.replace("file:///","") + ' --chks "'+selectedchks.join(',') + '"' ;
-					var cmdd = 'gulp sc --basepath ' + framework.getBaseUrl().replaceAll("file:///","") + ' --path '+ url.replace("file:///","") + ' --chks "'+selectedchks.join(',') + '"' +' --themename "'+ themename +'" --slug "'+ slug +'" --sourcedir "'+ sourcedir +'"';
 
+
+					// // // // // var tempinfodir = pinegrow.getFrameworks()["wordpress.pinegrow"].current_theme_info.dir;
+					// // // // // //pinegrow.getFrameworks()["wordpress.pinegrow"].current_theme_info.dir=url;
+
+
+					// // // // // var wpexportfirst1 = document.querySelectorAll(".wp-menu-theme-settings");
+					// // // // // wpexportfirst1.forEach(element => {
+					// // // // //   element.click();
+					// // // // // });
+					// // // // // var tempdir1 = document.querySelector("#pgapp > div.modal.aafade.in > div > div > div.modal-body > div > div > div > div > div:nth-child(2) > div > div.crsa-field.crsa-field-text.crsa-field-dir.pick-file > div.crsa-input.crsa-input-text.has-value > input");
+					// // // // // console.warn("burası1");
+					// // // // // console.warn(tempdir1.value);
+					// // // // // tempdir1.value = url.replace("file:///","");				
+					// // // // // console.warn(tempdir1.value);
+					// // // // // console.warn("burası2");
 					
-					//var cmdd = 'gulp minify-css --path '+ url.replace("file:///","") + ' --chks '+selectedchks.join(',') ;
-					//var cmdd = 'gulp minify-css';
+					// // // // // document.querySelector("#pgapp > div.modal.aafade.in > div > div > div.modal-footer > button.btn.btn-primary.btn-sm.ok").click();
+					// // // // // // var wpexportfirst2 = document.querySelector("#pgapp > div.modal.aafade.in > div > div > div.modal-footer > button.btn.btn-primary.btn-sm.ok");
+					// // // // // // wpexportfirst2.forEach(element => {
+					// // // // // //   element.click();
+					// // // // // // });
+
+
+					// // // // // pinegrow.showAlert("Please Wait 1 a Minute Then Click Button...", 'Please wait for Exporting All WordPress Files...Copy and Paste any shell window', '', 'Close', null, function () {
+
+					// // // // // 	var wpexport = document.querySelectorAll(".wp-menu-export");
+					// // // // // 	wpexport.forEach(element => {
+					// // // // // 	  element.click();
+					// // // // // 	});
+
+						
+					// // // // // 	pinegrow.showAlert("Please Wait 2 ...", 'Please wait for Exporting All WordPress Files...Copy and Paste any shell window', '', 'Close', null, function () {
+
+
+
+							var projectFile = "";//fse.readFileSync(framework.getBaseUrl()+'/pinegrow.json', "utf-8");
+		
+							msg = projectFile+"<textarea style='width: 100%;height: 100px;'>cd "+framework.getBaseUrl().replaceAll("file:///","") + "\n"; 
+							msg += "gulp sc --basepath "+ framework.getBaseUrl().replaceAll("file:///","") +" --path "+bizim.replace("file:///","")+" --chks "+ selectedchks +" --themename '"+ themename +"' --slug "+ slug +" --sourcedir "+ sourcedir +"</textarea>";
+			
+							pinegrow.showAlert(msg, 'Please wait 3for Exporting All WordPress Files...Copy and Paste any shell window', '', 'Close', null, function () {
+		
+		
+								//const {exec, fork, spawn} = require('child_process');
+								const child_process = require('child_process');
+				
+								// console.warn("process.env: ");
+								// console.warn(process.env);
+								// process.env.Path += ";"+ process.env.INIT_CWD+";zzzzz";
+		
+								if(process.env.PATH.split(';').indexOf(baseurl)>=0){
+								}else{
+									process.env.PATH += ";"+ baseurl;
+								}
+			//						process.env.PATH += ";"+ framework.getBaseUrl().replaceAll("file:///","").replaceAll("/","\\");
+		
+								//process.env.PATH += ";"+ framework.getBaseUrl().replaceAll("file:///","").replaceAll("/","\\")+"\\";
+								//process.env.PATH += ":"+ framework.getBaseUrl().replaceAll("file:///","");
+								//process.env.PATH += ":"+ framework.getBaseUrl().replaceAll("file:///","");
+								//process.env.PATH += ";"+ framework.getBaseUrl().replaceAll("file:///","");
+								//process.env.PATH += ";"+ framework.getBaseUrl().replaceAll("file:///","");
+								console.warn(process.env);
+								// console.warn(framework);		
+								// console.warn(framework.getBaseUrl());		
+								//file:///Users/semih/Desktop/2023/KraftPlugin
+			//					var cmdd = 'gulp sc --basepath ' + framework.getBaseUrl().replaceAll("file:///","") + ' --path '+ url.replace("file:///","") + ' --chks "'+selectedchks.join(',') + '"' ;
+								var cmdd = 'gulp sc --basepath ' + framework.getBaseUrl().replaceAll("file:///","") + ' --path '+ url.replace("file:///","") + ' --chks "'+selectedchks.join(',') + '"' +' --themename "'+ themename +'" --slug "'+ slug +'" --sourcedir "'+ sourcedir +'"';
+		
+								
+								//var cmdd = 'gulp minify-css --path '+ url.replace("file:///","") + ' --chks '+selectedchks.join(',') ;
+								//var cmdd = 'gulp minify-css';
+				
+								const islem = child_process.exec(cmdd, {
+									//cwd: framework.getBaseUrl().replaceAll("file:///","").replaceAll("/","\\"),
+									cwd: framework.getBaseUrl().replaceAll("file:///",""),
+									//cwd: framework.getBaseUrl(),
+									checkCWD: true,
+									env: process.env
+								},
+								function (error, stdout, stderr) {
+									if (error) throw error;
+										console.log('stdout: ' + stdout);
+										console.log('stderr: ' + stderr);		
+								});
+								console.warn(islem);
+								
+								islem.on('exit', function (code, signal) {
+									console.log('İşlem tamamlandı. İşlem kodu:  ' + code);
+								});
+				
+								console.warn(22);
+								//_this.requireFileFromUrl(url); //neden yazılmış???
+		
+								// // // // // var wpexportfirst1 = document.querySelectorAll(".wp-menu-theme-settings");
+								// // // // // wpexportfirst1.forEach(element => {
+								// // // // //   element.click();
+								// // // // // });
+								// // // // // var tempdir1 = document.querySelector("#pgapp > div.modal.aafade.in > div > div > div.modal-body > div > div > div > div > div:nth-child(2) > div > div.crsa-field.crsa-field-text.crsa-field-dir.pick-file > div.crsa-input.crsa-input-text.has-value > input");
+								// // // // // console.warn("burası1-2");
+								// // // // // console.warn(tempdir1.value);
+								// // // // // tempdir1.value = tempinfodir;				
+								// // // // // console.warn("burası2-2");
+								
+								// // // // // document.querySelector("#pgapp > div.modal.aafade.in > div > div > div.modal-footer > button.btn.btn-primary.btn-sm.ok").click();
+			
+								
+		
+							});
 	
-					const islem = child_process.exec(cmdd, {
-						//cwd: framework.getBaseUrl().replaceAll("file:///","").replaceAll("/","\\"),
-						cwd: framework.getBaseUrl().replaceAll("file:///",""),
-						//cwd: framework.getBaseUrl(),
-						checkCWD: true,
-						env: process.env
-					},
-					function (error, stdout, stderr) {
-						if (error) throw error;
-							console.log('stdout: ' + stdout);
-							console.log('stderr: ' + stderr);		
-					});
-					console.warn(islem);
-					
-					islem.on('exit', function (code, signal) {
-						console.log('İşlem tamamlandı. İşlem kodu:  ' + code);
-					});
 	
-					console.warn(22);
-					//_this.requireFileFromUrl(url); //neden yazılmış???
+	
+					// // // // // 	});						
+
+					// // // // // });
+
+
+
+
+
+
+
+
+	
+
 				}, false, false, false, openFolder)
 			}
 
@@ -250,13 +336,15 @@ async function runSC(framework) {
 			items.push({
 		  		label: 'Create ShortCodes',
 		  		action: function () {
-
-					var zxc = pinegrow.getFrameworks()["wordpress.pinegrow"].current_theme_info.dir;
+					
+					var path = pinegrow.getFrameworks()["wordpress.pinegrow"].current_theme_info.dir;
 					var themename = pinegrow.getFrameworks()["wordpress.pinegrow"].current_theme_info.options.name;
 					var slug = pinegrow.getFrameworks()["wordpress.pinegrow"].current_theme_info.options.slug;
 					var sourcedir = pinegrow.getFrameworks()["wordpress.pinegrow"].current_theme_info.source_dir;
-	
-					pinegrow.showAlert(themename+'<br>'+slug+'<br>'+sourcedir+'<br>'+zxc+'<br><input id="uts" type="checkbox" checked="checked" value="true"/> Use Theme Folder'+'<hr><input type="checkbox" checked="checked" class="cscchk" value="wpshortcode">WP Short Code<br/><input type="checkbox" checked="checked" class="cscchk" value="wpwidget">WP Widget<br/><input type="checkbox" checked="checked" class="cscchk" value="elementor">Elementor<br/><input type="checkbox" checked="checked" class="cscchk" value="wpbakery">WP Bakery<br/><input type="checkbox" checked="checked" class="cscchk" value="kingcomposer">King Composer<br/><input type="checkbox" checked="checked" class="cscchk" value="divibuilder">Divi Builder<br/><input type="checkbox" checked="checked" class="cscchk" value="sushortcode">Short Code Ultimate<br/><input type="checkbox" checked="checked" class="cscchk" value="siteorigin">Site Origin<br/><input type="checkbox" checked="checked" class="cscchk" value="beaverbuilder">Beaver Builder<br/><input type="checkbox" checked="checked" class="cscchk" value="livecomposer">Live Composer<br/><input type="checkbox" checked="checked" class="cscchk" value="themifybuilder">Themify Builder<br/><input type="checkbox" checked="checked" class="cscchk" value="wppagebuilder">WP Page Builder<br/><input type="checkbox" checked="checked" class="cscchk" value="gutenbergblock">Gutenberg Block<br/><input type="checkbox" checked="checked" class="cscchk" value="acf">ACF Block<br/><input type="checkbox" checked="checked" class="cscchk" value="orchard">Orchard Core<br/><input type="checkbox" checked="checked" class="cscchk" value="reactjs">React JS Component<br/><br><input type="button" onclick="document.querySelectorAll(\'.cscchk\').forEach(p => p.checked=true);" value="Select All"/><input type="button" onclick="document.querySelectorAll(\'.cscchk\').forEach(p => p.checked=false);" value="Deselect All"/>'+msg, 'Do you want to select a folder to create ShortCodes?', 'Not now.', 'Yes, please!', null, function () {
+					var baseurl = framework.getBaseUrl().replaceAll("file:///","");
+//					var baseurl2 = process.env.PATH.split(';').indexOf('C:\\Program Files\\Git\\cmd');		
+//baseurl2+'<br>'+process.env.PATH+'<br>
+					pinegrow.showAlert('Theme Name : '+themename+'<br>Slug : '+slug+'<br>Source Dir : '+sourcedir+'<br>Path : '+path+'<br>BaseUrl : '+baseurl+'<br><input id="uts" type="checkbox" checked="checked" value="true"/> Use Theme Folder'+'<hr><input type="checkbox" checked="checked" class="cscchk" value="wpshortcode">WP Short Code<br/><input type="checkbox" checked="checked" class="cscchk" value="wpwidget">WP Widget<br/><input type="checkbox" checked="checked" class="cscchk" value="elementor">Elementor<br/><input type="checkbox" checked="checked" class="cscchk" value="wpbakery">WP Bakery<br/><input type="checkbox" checked="checked" class="cscchk" value="kingcomposer">King Composer<br/><input type="checkbox" checked="checked" class="cscchk" value="divibuilder">Divi Builder<br/><input type="checkbox" checked="checked" class="cscchk" value="sushortcode">Short Code Ultimate<br/><input type="checkbox" checked="checked" class="cscchk" value="siteorigin">Site Origin<br/><input type="checkbox" checked="checked" class="cscchk" value="beaverbuilder">Beaver Builder<br/><input type="checkbox" checked="checked" class="cscchk" value="livecomposer">Live Composer<br/><input type="checkbox" checked="checked" class="cscchk" value="themifybuilder">Themify Builder<br/><input type="checkbox" checked="checked" class="cscchk" value="wppagebuilder">WP Page Builder<br/><input type="checkbox" checked="checked" class="cscchk" value="gutenbergblock">Gutenberg Block<br/><input type="checkbox" checked="checked" class="cscchk" value="acf">ACF Block<br/><input type="checkbox" checked="checked" class="cscchk" value="orchard">Orchard Core<br/><input type="checkbox" checked="checked" class="cscchk" value="reactjs">React JS Component<br/><br><input type="button" onclick="document.querySelectorAll(\'.cscchk\').forEach(p => p.checked=true);" value="Select All"/><input type="button" onclick="document.querySelectorAll(\'.cscchk\').forEach(p => p.checked=false);" value="Deselect All"/>'+msg, 'Do you want to select a folder to create ShortCodes?', 'Not now.', 'Yes, please!', null, function () {
 						//runSC(framework);
 						var allchks = [];
 						document.querySelectorAll(".cscchk").forEach(p => p.checked==true ? allchks.push(p.value): null);
@@ -4316,10 +4404,32 @@ function icon_box( $atts, $content = null ) {\n\
 							return xreturn;
 						},
 						set_value: function (pgel, value, values, oldValue, eventType) {
-							var x = pgel.html().split('array(');
-							var x0 = x[0];
-							var x1 = x[1].split('),')[0];
-							var x2 = x[1].split('),')[1]
+							console.warn(pgel.html());
+
+
+//							var x = pgel.html().split('array(');
+//							var x0 = x[0];
+//							var x1 = x[1].split('),')[0];
+//							var x2 = x[1].split('),')[1]
+
+// Verilen string
+var yourString = pgel.html();
+
+// İlk 'array(' den öncekileri al
+var x0 = yourString.substring(0, yourString.indexOf("array("));
+
+// İlk 'array(' den sonraki ilk ), e kadar olanları al
+var firstArrayContent = yourString.match(/array\([^)]*\)/)[0];
+
+// İlk ), den sonraki kısmı al
+var x2 = yourString.substring(yourString.indexOf("),") + 2);
+
+// Sonuçları console'da görüntüle
+//console.log("Before first array:", x0);
+//console.log("First array content:", firstArrayContent);
+//console.log("After first closing bracket:", x2);
+
+
 							var xvalue = [];
 							var yvalue = "";
 							if (value != null) {
@@ -4333,6 +4443,7 @@ function icon_box( $atts, $content = null ) {\n\
 								yvalue = yvalue.slice(0, -1);
 							}
 							var myString = x0 + "array(" + yvalue + ")," + x2;
+							console.warn(myString);
 							pgel.html(myString);
 							return value;
 						}
